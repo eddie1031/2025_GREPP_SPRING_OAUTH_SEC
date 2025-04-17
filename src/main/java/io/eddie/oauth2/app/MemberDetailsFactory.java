@@ -14,6 +14,16 @@ public class MemberDetailsFactory {
 
         switch ( provider.toUpperCase().trim() ) {
 
+            case "KAKAO" -> {
+                Map<String, String> properties = (Map<String, String>) attributes.get("properties");
+                return MemberDetails.builder()
+                        .name(properties.get("nickname"))
+                        .eamil(attributes.get("id") + "@kakao.com")
+                        .attributes(attributes)
+                        .build();
+            }
+
+
             case "GOOGLE" -> {
                 return MemberDetails.builder()
                         .name(attributes.get("name").toString())

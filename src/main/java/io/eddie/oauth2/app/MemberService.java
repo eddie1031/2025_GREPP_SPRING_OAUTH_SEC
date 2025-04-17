@@ -27,7 +27,6 @@ public class MemberService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        log.info("oAuth2User = {}", oAuth2User);
 
         String provider = userRequest.getClientRegistration().getRegistrationId().toUpperCase();
         MemberDetails memberDetails = MemberDetailsFactory.memberDetails(provider, oAuth2User);
