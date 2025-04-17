@@ -1,0 +1,43 @@
+spring:
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/grepp_sec_oauth
+    username:
+    password:
+
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    hibernate:
+      ddl-auto:
+
+
+  security:
+    oauth2:
+      client:
+        provider:
+          naver:
+            authorization-uri:
+            token-uri:
+            user-info-uri:
+            user-name-attribute: response
+        registration:
+          naver:
+            client-name: Naver
+            client-id:
+            client-secret:
+            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+            authorization-grant-type:
+            client-authentication-method:
+            scope:
+              -
+              -
+          google:
+            client-id:
+            client-secret:
+            scope:
+              - email
+              - profile

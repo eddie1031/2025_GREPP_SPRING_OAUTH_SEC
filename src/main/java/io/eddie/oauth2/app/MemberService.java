@@ -26,34 +26,31 @@ public class MemberService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
-        String provider = userRequest.getClientRegistration().getRegistrationId();
-        log.info("userRequest = {}", provider);
-
         OAuth2User oAuth2User = super.loadUser(userRequest);
         log.info("oAuth2User = {}", oAuth2User);
 
-        Map<String, Object> attributes = oAuth2User.getAttributes();
-        String findName = attributes.get("name").toString();
-        String email = attributes.get("email").toString();
+        String provider = userRequest.getClientRegistration().getRegistrationId().toUpperCase();
+        MemberDetails memberDetails = MemberDetailsFactory.memberDetails(provider, oAuth2User);
 
-        Optional<Member> memberOptional = memberRepository.findByEmail(email);
+        Optional<Member> memberOptional = memberRepository.findByEmail(memberDetails.getEmail());
 
-        Member member = memberOptional.orElseGet(
+        Member findMember = memberOptional.orElseGet(
                 () -> {
                     Member saved = Member.builder()
-                            .name(findName)
-                            .email(email)
+                            .name(memberDetails.getName())
+                            .email(memberDetails.getEmail())
                             .provider(provider)
                             .build();
                     return memberRepository.save(saved);
                 }
         );
 
-        return MemberDetails.builder()
-                .name(member.getName())
-                .role(member.getRole())
-                .attributes(attributes)
-                .build();
+        if ( findMember.getProvider().equals(provider) ) {
+            return memberDetails.setRole(findMember.getRole());
+        } else {
+            throw new RuntimeException();
+        }
+
     }
 
 }
